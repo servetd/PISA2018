@@ -1,0 +1,77 @@
+---
+title: "Google Data Analytic Capstone Project"
+author: "Servet Demir"
+date: "03 07 2021"
+output: html_document
+---
+
+```{r setup, results='hide'}
+# Related library
+library(haven)
+library(openxlsx)
+library(tidyverse)
+```
+
+## Load related data
+1. Load data. PISA shares all raw data on web page (https://www.oecd.org/pisa/data/2018database/). All students’ questionnaire data is in same file (SPSS or SAS file) ( https://webfs.oecd.org/pisa2018/SPSS_STU_QQQ.zip). I prefer SPSS file because I can clean data with RStudio.
+
+```{r data}
+data <- read_sav("STU/CY07_MSU_STU_QQQ.sav")
+nrow(data)
+ncol(data)
+```
+In full data, there are `r nrow(data)` observation and `r ncol(data)` variables. But in this study, I don't need all data and variables. According to my research question, I select related variables  
+
+## Selecting related variables  
+
+There are 8 question in this study. There are 18 column about related these questions:  
+CNTRYID,CNT,IC002Q01HA,IC004Q01HA, IC005Q01TA, IC006Q01TA, IC007Q01TA, IC150Q02HA, IC150Q03HA, IC150Q05HA, IC151Q02HA, IC151Q03HA, IC151Q05HA, IC015Q02NA, IC015Q03NA, IC015Q05NA, IC015Q07NA, IC015Q09NA  
+
+```{r selected variables}
+data_selected <- subset(data, select=c(CNTRYID,CNT,IC002Q01HA,IC004Q01HA, IC005Q01TA, IC006Q01TA, IC007Q01TA,
+                                       IC150Q02HA, IC150Q03HA, IC150Q05HA,
+                                       IC151Q02HA, IC151Q03HA, IC151Q05HA, 
+                                       IC015Q02NA, IC015Q03NA, IC015Q05NA, IC015Q07NA, IC015Q09NA ))
+nrow(data_selected)
+ncol(data_selected)
+```
+In selected data, there are `r nrow(data_selected)` observation and `r ncol(data_selected)` variables. Column number is decreased. 
+
+## Selecting related observation
+a) I cleaned observation non-Digital devices user. Because in the questionnaire, "How old were you when you first used a digital device?" question is a critical question to continue to answer other questions. There is an expression in the questionnaire "If the student selects “I have never used a digital device until today (6)”, the questionnaire will terminate as the proceeding questions will not be relevant to the student." So that I add a condition (IC002Q01HA< 6)
+b) To answer the research question I choose High-income groups and middle-income countries (From https://en.wikipedia.org/wiki/List_of_countries_by_GNI_(nominal)_per_capita) list  
+*High-income group*
+        1. CHE-Switzerland  
+        2. ISL- Iceland 
+        3. USA- United States 
+        4. SGP- Singapore 
+        5. HRV- Croatia 
+*Upper-middle-income group* 
+        1. RUS- Russia 
+        2. BGR- Bulgaria 
+        3. TUR- Turkey 
+        4. KAZ- Kazakhstan 
+        5.ALB- Albania 
+c) I cleaned NA observation.
+```{r cleaned data}
+data_selected_cleaned <- subset(data_selected, IC002Q01HA< 6)
+data_selected_cleaned <- subset(data_selected_cleaned, CNT== "CHE"| CNT=="ISL" | CNT=="USA" | CNT=="SGP" | CNT=="HRV"| CNT=="RUS" | CNT=="BGR" | CNT=="TUR" | CNT=="KAZ" | CNT=="ALB")
+data_selected_cleaned <-data_selected_cleaned[complete.cases(data_selected_cleaned[, 2:15]),]
+nrow(data_selected_cleaned)
+ncol(data_selected_cleaned)
+```
+In cleaned data, there are `r nrow(data_selected_cleaned)` observation and `r ncol(data_selected_cleaned)` variables. Observation number is decreased.
+
+## Save the cleaned data
+to visualize the data, I prefer Tableau. So that I saved cleaned data as excel file
+```{r save data}
+openxlsx::write.xlsx(data_selected_cleaned, "STU/data_selected_cleaned.xlsx", sheetName="pisa2018")
+```
+
+## Pre-visualize in Excel
+a) I add ID number for each observation in excel
+b) I grouped [C150Q02HA, IC150Q03HA, IC150Q05HA, IC151Q02HA, IC151Q03HA, IC151Q05HA] variables in the second sheet. 
+Also, I grouped [IC015Q02NA, IC015Q03NA, IC015Q05NA, IC015Q07NA, IC015Q09NA] in the third sheet.
+
+## Report via Tableau online
+My Final report 
