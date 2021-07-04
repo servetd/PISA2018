@@ -1,4 +1,6 @@
 # Google Data Analytic Capstone Project 
+Analyzed by Servet DEMIR
+servetdemirtr27@gmail.com
   
 Programme for International Students Assessment (PISA) measures 15-year-olds’ ability to use their reading, mathematics and science knowledge and skills to meet real-life challenges. Also, PISA measures different concept (Well-being, educational careers, ICT familiarities, financial literacy) with questionnaires. 
 In this study, I focused ICT familiarities topic.  
@@ -11,3 +13,4 @@ GACPS1.Rmd
 
 My Tableau Presentation
 https://public.tableau.com/app/profile/servet.demir/viz/Pisa_2018_ICT/presentation
+Also you can download final data from tableau public
